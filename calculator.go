@@ -1,8 +1,10 @@
-
 package main
 
 import (
     ."fmt"
+    "bufio"
+    "os"
+    "strings"
 )
 
 func main() {
@@ -12,15 +14,29 @@ func main() {
 
     var a, b, symbol string 
     var countLatin, countArab, d, c int
-    Scan(&a, &symbol, &b)
+
+                 
+    scanner := bufio.NewScanner(os.Stdin)
+    scanner.Scan()
+    slc := strings.Split(scanner.Text(), " ")
+    if len(slc) > 3 {
+        Println("На вход принимаются только два числа и математический символ между ними!")
+        return
+    }
+   
+    a = slc[0]
+    symbol = slc[1]
+    b = slc[2]
+
+                               
     
-    arrayArab := [10]string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+    arrayArab := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
       
-    arrayRoman := [20]string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", 
-		 "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"}
+    arrayRoman := []string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", ""} // "XI", "XII", "XIII", 
+		// "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"}
     
     
-       for idx, elem := range arrayRoman[:10] {
+       for idx, elem := range arrayRoman {
         if elem == a {
             d = idx + 1
            countLatin++ 
@@ -45,10 +61,10 @@ func main() {
            
 
         
-    result := 0   
+    result := 0  
     if countLatin == 1 && countArab == 1 {
         Print("Вы не можете одновременно использовать римские и арабские цифры!")
-    } else  if countArab == 2 || countLatin == 2 { 
+    } else  if countArab == 2 || countLatin == 2 {       
         switch symbol {
         case "+":
             result = d + c
@@ -67,16 +83,52 @@ func main() {
             Println("Проверьте соответствует ли условие инструкциям") 
         }
       
-                        
-    romanResult := "" 
+     
+    
     if countLatin == 2 {
+        romanResult := "" 
+        search := result%10 - 1
+        if search < 0 {
+            search = 10
+        }
         if result <= 0 {
             Println("В римской системе счисления отсутствуют отрицательные числа или ноль")
-        } else {      
-        romanResult = arrayRoman[result - 1]
-		Print("= ")
-        Println(romanResult)  
-        }
+        } else {     
+            cicleValue := (result/10)%10  
+            if result > 10 && result < 40 {               
+            
+                for i:=0; i<(cicleValue); i++ {
+                    romanResult += "X"
+                }
+                romanResult += arrayRoman[search]
+            }else if result >=40 && result < 50 {
+
+                romanResult += "XL"
+                romanResult += arrayRoman[search]   
+            
+            } else if result >= 50 && result < 90 { 
+                      
+                romanResult += "L"
+                
+                cicleValue50 := ((result-50)/10)%10 
+
+                for i:=0; i<(cicleValue50); i++ {
+                romanResult += "X"
+                }
+                romanResult += arrayRoman[search]
+
+            } else if result >= 90 && result < 100 {
+                romanResult += "XC"
+                romanResult += arrayRoman[search]
+
+            } else if result == 100 {
+                romanResult = "C"  
+            } else {
+                romanResult = arrayRoman[search]
+            }                       
+		    Print("= ")
+            Println(romanResult)  
+            }
         
     } else {
 		Print("= ")
@@ -85,6 +137,21 @@ func main() {
 
         
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
